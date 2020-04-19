@@ -30,7 +30,8 @@
       (q/random-seed seed)
 
       (try
-        (actual-draw (:rh state) (:rw state) (:det state) (:colors state))
+        ;(actual-draw (:rh state) (:rw state) (:det state) (:colors state))
+        (actual-draw state)
         (catch Throwable t
           (println "Exception in draw function:" t)))
 
@@ -38,6 +39,10 @@
       (let [img-filename (str "img-" img-num "-" cur-time "-" seed ".tif")]
         (q/save img-filename)
         (println "done saving" img-filename)
+
+        ; Some part of image saving appears to be async on windows. This is lame, but
+        ; for now, add a sleep to help avoid compressing partially-written files.
+        (Thread/sleep 500)
 
         ; (sh "bash" "-c" (str "convert -compress lzw " img-filename " " img-filename))
         ; (println "done compressing")
@@ -62,7 +67,7 @@
   (q/vertex x1 y2 (* hh (q/noise (* x1 det) (* y2 det))))
   (q/end-shape :close))
 
-(defn actual-draw [rh rw det colors]
+(defn actual-draw [{:keys [rh rw det colors]}]
   (q/background 0)
   (q/stroke 0 90)
 
