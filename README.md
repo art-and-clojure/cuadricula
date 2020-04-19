@@ -1,18 +1,6 @@
-# cuadricula
+# Cuadricula
 
-A Quil sketch designed to ... well, that part is up to you.
+This is the first artwork using Clojure and Quil. It's inspired by a Manoloide's sketch named [Cuadricula](https://github.com/manoloide/AllSketchs/tree/master/2017/Generativos/Cuadricula)
 
-## Usage
 
-LightTable - open `core.clj` and press `Ctrl+Shift+Enter` to evaluate the file.
-
-Emacs - run cider, open `core.clj` and press `C-c C-k` to evaluate the file.
-
-REPL - run `(require 'cuadricula.core)`.
-
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+![Sample](sample.jpg)
