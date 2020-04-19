@@ -5,7 +5,7 @@
     ; [genartlib.curves :refer :all]
     ; [genartlib.geometry :refer :all]
     ; [genartlib.random :refer :all]
-            [genartlib.util :refer [set-color-mode w h]]
+            [genartlib.util :refer [set-color-mode]]
             [quil.core :as q]
             [quil.helpers.seqs :refer [range-incl]]
             ))
@@ -49,15 +49,23 @@
         idx1 (int (mod value (count colors)))
         idx2 (int (mod (inc value) (count colors)))
         c1 (get colors idx1)
-        c2 (get colors idx2)
-        ]
-    (q/lerp-color c1 c2 (mod value 1))
-    )
+        c2 (get colors idx2)]
+    (q/lerp-color c1 c2 (mod value 1)))
   )
+
+(defn draw-box [x1 y1 x2 y2 hh det color]
+  (q/fill color)
+  (q/begin-shape)
+  (q/vertex x1 y1 (* hh (q/noise (* x1 det) (* y1 det))))
+  (q/vertex x2 y1 (* hh (q/noise (* x2 det) (* y1 det))))
+  (q/vertex x2 y2 (* hh (q/noise (* x2 det) (* y2 det))))
+  (q/vertex x1 y2 (* hh (q/noise (* x1 det) (* y2 det))))
+  (q/end-shape :close))
 
 (defn actual-draw [rh rw det colors]
   (q/background 0)
   (q/stroke 0 90)
+
   (let [dw (/ (q/width) (float rw))
         dh (/ (q/height) (float rh))
         hh (* dw 2)]
@@ -73,21 +81,10 @@
                     y1 (* j dh)
                     x2 (* (inc i) dw)
                     y2 (* (inc j) dh)
-                    ]
-                (q/fill (get-fill-color (+ ic (* dc i)) colors))
-
-                (q/begin-shape)
-                (q/vertex x1 y1 (* hh (q/noise (* x1 det) (* y1 det))))
-                (q/vertex x2 y1 (* hh (q/noise (* x2 det) (* y1 det))))
-                (q/vertex x2 y2 (* hh (q/noise (* x2 det) (* y2 det))))
-                (q/vertex x1 y2 (* hh (q/noise (* x1 det) (* y2 det))))
-                (q/end-shape :close))
-              ))
-          )
-        )
-      )
-    )
-  )
+                    color (get-fill-color (+ ic (* dc i)) colors)]
+                (draw-box x1 y1 x2 y2 hh det color))))
+          )))
+    ))
 
 (defn setup []
   (q/smooth)
@@ -95,7 +92,7 @@
   (q/hint :disable-async-saveframe)
 
   ; Set color mode to HSB (HSV) instead of default RGB.
-  (q/color-mode :hsb)
+  (q/color-mode :hsb 360 100 100 1.0)
 
   ; setup function returns initial state.
   {:rh     (int (q/random 2 50))
@@ -106,8 +103,7 @@
             (q/color 37 6 82)
             (q/color 194 31 77)
             (q/color 0 73 92)
-            (q/color 244 36 53)]
-   }
+            (q/color 244 36 53)]}
   )
 
 (q/defsketch cuadricula
